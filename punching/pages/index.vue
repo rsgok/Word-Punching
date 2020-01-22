@@ -15,8 +15,12 @@
       <el-row>
         <el-col :span="4" :offset="10">
           <div class="btn-links">
-            <el-button type="text">Statistics</el-button>
-            <el-button type="text">Words-List</el-button>
+            <nuxt-link to="/statistics">
+              <el-button type="text">Statistics</el-button>
+            </nuxt-link>
+            <nuxt-link to="/wordlist">
+              <el-button type="text">WordList</el-button>
+            </nuxt-link>
           </div>
         </el-col>
       </el-row>
@@ -35,15 +39,13 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .container {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 .mainbox {
   width: 100vw;
