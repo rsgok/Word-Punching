@@ -1,10 +1,11 @@
 <template>
   <div class="container">
     <el-row>
-      <el-col :md="{ span: 16, offset: 4 }" :xs="{ span: 20, offset: 2 }">
+      <el-col :md="{ span: 16, offset: 4 }" :sm="{ span: 20, offset: 2 }" :xs="{ span: 20, offset: 2 }">
         <el-breadcrumb separator="/">
           <el-breadcrumb-item :to="{ path: '/' }">Index</el-breadcrumb-item>
-          <el-breadcrumb-item>WordList</el-breadcrumb-item>
+          <el-breadcrumb-item :to="{ path: '/wordlist' }">WordList</el-breadcrumb-item>
+          <el-breadcrumb-item>{{wordListName}}</el-breadcrumb-item>
         </el-breadcrumb>
         <el-card class="box-card">
           <el-table
@@ -33,9 +34,21 @@
   </div>
 </template>
 <script>
+import axios from 'axios';
 export default {
+  created() {
+    //   console.log(this.$route.query.wordListName);
+    if(this.$route.query.wordListName == null) {
+        this.$router.push({
+            path: "/notfound",
+        })
+    }
+    this.wordListName = this.$route.query.wordListName;
+    this.fetchData();
+  },
   data() {
     return {
+      wordListName: null,
       tableData: [
         {
           date: '2016-05-02',
@@ -62,6 +75,11 @@ export default {
     }
   },
   methods: {
+    async fetchData() {
+        const res = await axios.get('http://localhost:3000/api/wordlist');
+        console.log(res);
+        
+    },
     handleEdit(index, row) {
       console.log(index, row)
     },
