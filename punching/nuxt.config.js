@@ -27,7 +27,7 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['@/plugins/element-ui'],
+  plugins: ['@/plugins/element-ui','@/plugins/axios'],
   /*
    ** Nuxt.js dev-modules
    */
@@ -47,7 +47,12 @@ module.exports = {
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
-  axios: {},
+  axios: {
+    proxy: true,
+  },
+  proxy: {
+    '/api/': 'http://localhost:3000/',
+  },
   /*
    ** Build configuration
    */
@@ -57,5 +62,13 @@ module.exports = {
      ** You can extend webpack config here
      */
     extend(config, ctx) {}
-  }
+  },
+
+
+  /*
+   ** api configuration
+   */
+  serverMiddleware: [
+    '~/api/wordlist'
+  ],
 }

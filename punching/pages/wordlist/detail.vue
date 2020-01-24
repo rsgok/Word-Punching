@@ -1,23 +1,34 @@
 <template>
   <div class="container">
     <el-row>
-      <el-col :md="{ span: 16, offset: 4 }" :sm="{ span: 20, offset: 2 }" :xs="{ span: 20, offset: 2 }">
+      <el-col
+        :md="{ span: 16, offset: 4 }"
+        :sm="{ span: 20, offset: 2 }"
+        :xs="{ span: 20, offset: 2 }"
+      >
         <el-breadcrumb separator="/">
           <el-breadcrumb-item :to="{ path: '/' }">Index</el-breadcrumb-item>
           <el-breadcrumb-item :to="{ path: '/wordlist' }">WordList</el-breadcrumb-item>
           <el-breadcrumb-item>{{wordListName}}</el-breadcrumb-item>
         </el-breadcrumb>
+        <div class="pagination">
+          <el-pagination
+            layout="prev, pager, next"
+            :total="totalNumber"
+            :page-size="limit"
+            :current-page="page"
+            :disabled="paginationDisabled"
+            @current-change="handlePage"
+          ></el-pagination>
+        </div>
         <el-card class="box-card">
+          <el-input v-model="searchtext" size="mini" placeholder="search" />
           <el-table
-            :data="tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+            :data="tableData.filter(data => searchtext=='' || data.text.toLowerCase().includes(searchtext.toLowerCase()))"
             style="width: 100%"
           >
-            <el-table-column label="Date" prop="date"></el-table-column>
-            <el-table-column label="Name" prop="name"></el-table-column>
+            <el-table-column label="Word" prop="text"></el-table-column>
             <el-table-column align="right">
-              <template slot="header">
-                <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
-              </template>
               <template slot-scope="scope">
                 <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
                 <el-button
@@ -29,56 +40,63 @@
             </el-table-column>
           </el-table>
         </el-card>
+        <div class="pagination">
+          <el-pagination
+            layout="prev, pager, next"
+            :total="totalNumber"
+            :page-size="limit"
+            :current-page="page"
+            :disabled="paginationDisabled"
+            @current-change="handlePage"
+          ></el-pagination>
+        </div>
       </el-col>
     </el-row>
   </div>
 </template>
 <script>
-import axios from 'axios';
 export default {
   created() {
     //   console.log(this.$route.query.wordListName);
-    if(this.$route.query.wordListName == null) {
-        this.$router.push({
-            path: "/notfound",
-        })
+    if (this.$route.query.wordListName == null) {
+      this.$router.push({
+        path: '/notfound'
+      })
     }
-    this.wordListName = this.$route.query.wordListName;
-    this.fetchData();
+    this.wordListName = this.$route.query.wordListName
+    this.fetchData(this.wordListName)
   },
   data() {
     return {
       wordListName: null,
-      tableData: [
-        {
-          date: '2016-05-02',
-          name: 'word',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-04',
-          name: 'english',
-          address: '上海市普陀区金沙江路 1517 弄'
-        },
-        {
-          date: '2016-05-01',
-          name: 'Goodboy',
-          address: '上海市普陀区金沙江路 1519 弄'
-        },
-        {
-          date: '2016-05-03',
-          name: 'what do you mean',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }
-      ],
-      search: ''
+      totalNumber: 50,
+      page: 1,
+      limit: 50,
+      paginationDisabled: false,
+      tableData: [],
+      searchtext: '',
+      allData: []
     }
   },
   methods: {
-    async fetchData() {
-        const res = await axios.get('http://localhost:3000/api/wordlist');
-        console.log(res);
-        
+    async fetchData(wordListName) {
+      const res = await this.$axios({
+        url: '/api/wordlist',
+        method: 'post',
+        data: {
+          wordListName
+        }
+      })
+      this.allData = res.data.words
+      this.totalNumber = this.allData.length
+      this.handlePage(1)
+    },
+    handlePage(page) {
+      console.log("page change to: ",page);
+      
+      this.page = page
+      const startIndex = (page - 1) * this.limit
+      this.tableData = this.allData.slice(startIndex, startIndex + this.limit)
     },
     handleEdit(index, row) {
       console.log(index, row)
@@ -86,15 +104,35 @@ export default {
     handleDelete(index, row) {
       console.log(index, row)
     }
-  }
+  },
+  // TODO 单词搜索逻辑优化
+  // watch: {
+  //   searchtext(newValue, oldValue) {
+  //     if(newValue=='') {
+  //       this.handlePage(this.page);
+  //       this.totalNumber = this.allData.length;
+  //     } else {
+  //       this.
+  //     }
+  //   }
+  // }
 }
 </script>
 <style scoped>
 .container {
   width: 100vw;
   margin-top: 50px;
+  margin-bottom: 50px;
 }
 .box-card {
   margin-top: 30px;
+}
+.pagination {
+  display: flex;
+  direction: row;
+  width: 100%;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 20px;
 }
 </style>
