@@ -26,12 +26,23 @@
           <el-table
             :data="tableData.filter(data => searchtext=='' || data.text.toLowerCase().includes(searchtext.toLowerCase()))"
             style="width: 100%"
+            size="medium"
           >
             <el-table-column label="Word" prop="text"></el-table-column>
-            <el-table-column align="right">
+            <el-table-column min-width="150px" align="center" fixed="right" label="Handle">
               <template slot-scope="scope">
-                <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
                 <el-button
+                  size="mini"
+                  type="primary"
+                  @click="handlePunch(scope.$index, scope.row)"
+                >Punch</el-button>
+                <el-button
+                  size="mini"
+                  type="success"
+                  @click="handleMaster(scope.$index, scope.row)"
+                >Master</el-button>
+                <el-button
+                  v-if="wordListName==='mywords'"
                   size="mini"
                   type="danger"
                   @click="handleDelete(scope.$index, scope.row)"
@@ -92,19 +103,22 @@ export default {
       this.handlePage(1)
     },
     handlePage(page) {
-      console.log("page change to: ",page);
-      
+      console.log('page change to: ', page)
+
       this.page = page
       const startIndex = (page - 1) * this.limit
       this.tableData = this.allData.slice(startIndex, startIndex + this.limit)
     },
-    handleEdit(index, row) {
+    handlePunch(index, row) {
       console.log(index, row)
     },
     handleDelete(index, row) {
       console.log(index, row)
+    },
+    handleMaster(index, row) {
+      console.log(index, row)
     }
-  },
+  }
   // TODO 单词搜索逻辑优化
   // watch: {
   //   searchtext(newValue, oldValue) {
