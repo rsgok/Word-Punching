@@ -20,6 +20,8 @@ module.exports = {
   // add your custom rules here
   rules: {
     'nuxt/no-cjs-in-config': 'off',
-    "object-shorthand": ["warning", "always"]
+    "object-shorthand": ["warning", "always"],
+    "no-multi-str": 1,
+    "prefer-const": 0
   }
 }

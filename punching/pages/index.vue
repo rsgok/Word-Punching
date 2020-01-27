@@ -1,15 +1,16 @@
 <template>
   <div class="container">
     <div class="mainbox">
+      <!-- TODO 动态适应样式-->
       <el-row>
         <div class="title">Words Punching</div>
       </el-row>
       <el-row>
         <el-col :span="10" :offset="6">
-          <el-input v-model="input" placeholder="Words To Add"></el-input>
+          <el-input v-model="input" placeholder="Input Word To Punch"></el-input>
         </el-col>
         <el-col :span="2">
-          <el-button type="primary">Add</el-button>
+          <el-button type="primary" @click="handlePunch">Punch</el-button>
         </el-col>
       </el-row>
       <el-row>
@@ -34,6 +35,76 @@ export default {
   data() {
     return {
       input: ''
+    }
+  },
+  methods: {
+    async handleMark(val) {
+      await console.log("handle mark");
+      
+    },
+    async handlePunch() {
+      const word = this.input
+      // TODO 检查word的合法性
+      if (word === '') {
+        this.$message({
+          message: 'word not valid',
+          center: true
+        })
+        return
+      }
+      // do punch post
+      const res = await this.$axios({
+        url: '/api/word/punch',
+        method: 'post',
+        data: {
+          word,
+          uid: 1
+        }
+      })
+      const { detail } = res.data
+      // success info
+      const h = this.$createElement
+      this.$notify({
+        title: 'Success',
+        message: h('p', null, [
+          'Punch the word ',
+          h('el-tag', null, detail.text),
+          ' successfully!'
+        ]),
+        onClose: () => {
+          // if times>=5
+          if (detail.times >= 5) {
+            this.$notify({
+              title: 'Tip',
+              dangerouslyUseHTMLString: true,
+              message: h('p', null, [
+                'You have memorized ',
+                h('el-tag', { effect: 'dark' }, detail.text),
+                h(
+                  'p',
+                  null,
+                  ' ' + detail.times + ' times. Maybe you want to mark it as '
+                ),
+                h(
+                  'el-button',
+                  {
+                    attr:{
+                      type: 'text',
+                    },
+                    on: {
+                      click: function() {
+                        this.handleMark("val")
+                      }
+                    }
+                  },
+                  'Masterd'
+                )
+              ]),
+              duration: 5000
+            })
+          }
+        }
+      })
     }
   }
 }

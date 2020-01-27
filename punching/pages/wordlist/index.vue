@@ -1,15 +1,33 @@
 <template>
   <div class="container">
     <el-row>
-      <el-col :md="{ span: 16, offset: 4 }" :sm="{ span: 20, offset: 2 }" :xs="{ span: 20, offset: 2 }">
+      <el-col
+        :md="{ span: 16, offset: 4 }"
+        :sm="{ span: 20, offset: 2 }"
+        :xs="{ span: 20, offset: 2 }"
+      >
         <el-breadcrumb separator="/">
           <el-breadcrumb-item :to="{ path: '/' }">Index</el-breadcrumb-item>
           <el-breadcrumb-item>WordList</el-breadcrumb-item>
         </el-breadcrumb>
+        <el-card class="box-card"> 
+          <div>
+            <span>My Words (Personally Added)</span>
+            <el-button
+              style="float: right; padding: 3px 0"
+              type="text"
+              @click="linkToDetail('mywords')"
+            >Detail</el-button>
+          </div>
+        </el-card>
         <el-card v-for="item in wordlists" :key="item.name" class="box-card">
           <div slot="header" class="clearfix">
-            <span>{{item.name}}</span>
-            <el-button style="float: right; padding: 3px 0" type="text" @click="linkToDetail(item.name)">Detail</el-button>
+            <span>{{computeWordListShowName(item.name)}}</span>
+            <el-button
+              style="float: right; padding: 3px 0"
+              type="text"
+              @click="linkToDetail(item.name)"
+            >Detail</el-button>
           </div>
           <div>
             <div v-if="item.isBegin == false" class="infotext">Haven't Begun Your Tutorial Yet.</div>
@@ -28,37 +46,67 @@ export default {
   components: {
     piechart
   },
+  created() {
+    this.fetchData()
+  },
   data() {
     return {
-      wordlists: [
-        {
-          name: 'Toefl Intelligent',
-          total: 4200,
-          master: 1200,
-          timeGt5: 300,
-          timeLt5: 500,
-          timeZero: 2200,
-          isBegin: true
-        },
-        {
-          name: 'Toefl Core',
-          total: 2400,
-          master: 1200,
-          timeGt5: 200,
-          timeLt5: 500,
-          timeZero: 500,
-          isBegin: true
-        },
-        { name: 'French Core', total: 2300, master: 1200, isBegin: false }
+      memory: null,
+      // TODO: knowWordLists改为从服务器端获取
+      knownWordLists: [
+        { name: 'toefl_intelligent', total: 3462, isBegin: true },
+        { name: 'toefl_core', total: 2139, isBegin: false }
       ],
+      wordListsMap: {},
+      wordlists: [],
       chartOptions: {
         responsive: true,
         maintainAspectRatio: false
       }
     }
   },
-  computed: {},
   methods: {
+    fetchData: async function() {
+      const res = await this.$axios({
+        url: '/api/wordlist/summarize',
+        method: 'post',
+        data: {}
+      })
+      this.memory = res.data.data
+      this.processMemory()
+    },
+    processMemory: function() {
+      this.knownWordLists.forEach((wordlist) => {
+        const obj = {
+          name: wordlist.name,
+          total: wordlist.total,
+          master: 0,
+          timeGt5: 0,
+          timeLt5: 0,
+          timeZero: 0,
+          isBegin: wordlist.isBegin
+        }
+        this.wordListsMap[wordlist.name] = obj
+      })
+      this.memory.forEach((item) => {
+        const source = item.source
+        this.knownWordLists.forEach((wordlist) => {
+          const name = wordlist.name
+          if (source.includes(name)) {
+            if (item.is_master === 1) this.wordListsMap[name].master++
+            else if (item.times > 5) this.wordListsMap[name].timeGt5++
+            else this.wordListsMap[name].timeLt5++
+          }
+        })
+      })
+      // map to array
+      for(const x in this.wordListsMap) {
+        let item = this.wordListsMap[x];
+        // compute timezero
+        item.timeZero = item.total - item.master - item.timeGt5 - item.timeLt5;
+        this.wordlists.push(item);
+      }
+    },
     getChartData: (v) => {
       return {
         labels: [
@@ -77,11 +125,15 @@ export default {
     },
     linkToDetail: function(param) {
       this.$router.push({
-        path: "/wordlist/detail",
+        path: '/wordlist/detail',
         query: {
           wordListName: param
         }
       })
+    },
+    computeWordListShowName(v) {
+      if(v==="toefl_intelligent") return "Toefl Intelligent";
+      if(v==="toefl_core") return "Toefl Core";
     }
   }
 }

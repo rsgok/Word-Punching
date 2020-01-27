@@ -69,6 +69,7 @@ module.exports = {
    ** api configuration
    */
   serverMiddleware: [
-    '~/api/wordlist'
+    '~/api/wordlist',
+    '~/api/word'
   ],
 }
