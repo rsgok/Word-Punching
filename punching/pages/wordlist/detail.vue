@@ -31,14 +31,16 @@
             <el-table-column label="Word" prop="text">
               <template slot-scope="scope">
                 <!-- <span v-if="scope.row.times>0">{{ scope.row.text }}</span> -->
-                <span>{{ scope.row.text }}</span>
+                <el-link :href="basicExternalUrl+scope.row.href" target="_blank">
+                  <span>{{ scope.row.text }}</span>
+                </el-link>
                 <el-tag
-                  size="mini"
-                  v-if="scope.row.times"
-                  :type="scope.row.is_master===1 ? 'success' : 'danger'"
-                  class="tag"
-                  effect="dark"
-                >{{scope.row.times}}</el-tag>
+                    size="mini"
+                    v-if="scope.row.times"
+                    :type="scope.row.is_master===1 ? 'success' : 'danger'"
+                    class="tag"
+                    effect="dark"
+                  >{{scope.row.times}}</el-tag>
               </template>
             </el-table-column>
             <el-table-column min-width="150px" align="right" fixed="right" label="Handle">
@@ -100,6 +102,7 @@ export default {
   },
   data() {
     return {
+      basicExternalUrl: 'https://www.koolearn.com',
       wordListName: null,
       totalNumber: 50,
       page: 1,

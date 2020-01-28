@@ -71,39 +71,40 @@ export default {
           h('el-tag', null, detail.text),
           ' successfully!'
         ]),
-        onClose: () => {
-          // if times>=5
-          if (detail.times >= 5) {
-            this.$notify({
-              title: 'Tip',
-              dangerouslyUseHTMLString: true,
-              message: h('p', null, [
-                'You have memorized ',
-                h('el-tag', { effect: 'dark' }, detail.text),
-                h(
-                  'p',
-                  null,
-                  ' ' + detail.times + ' times. Maybe you want to mark it as '
-                ),
-                h(
-                  'el-button',
-                  {
-                    attr:{
-                      type: 'text',
-                    },
-                    on: {
-                      click: function() {
-                        this.handleMark("val")
-                      }
-                    }
-                  },
-                  'Masterd'
-                )
-              ]),
-              duration: 5000
-            })
-          }
-        }
+        // TODO 主页快速master单词
+        // onClose: () => {
+        //   // if times>=5
+        //   if (detail.times >= 5) {
+        //     this.$notify({
+        //       title: 'Tip',
+        //       dangerouslyUseHTMLString: true,
+        //       message: h('p', null, [
+        //         'You have memorized ',
+        //         h('el-tag', { effect: 'dark' }, detail.text),
+        //         h(
+        //           'p',
+        //           null,
+        //           ' ' + detail.times + ' times. Maybe you want to mark it as '
+        //         ),
+        //         h(
+        //           'el-button',
+        //           {
+        //             attr:{
+        //               type: 'text',
+        //             },
+        //             on: {
+        //               click: function() {
+        //                 this.handleMark("val")
+        //               }
+        //             }
+        //           },
+        //           'Masterd'
+        //         )
+        //       ]),
+        //       duration: 5000
+        //     })
+        //   }
+        // }
       })
     }
   }
