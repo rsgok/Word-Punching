@@ -10,7 +10,7 @@
           <el-breadcrumb-item :to="{ path: '/' }">Index</el-breadcrumb-item>
           <el-breadcrumb-item>WordList</el-breadcrumb-item>
         </el-breadcrumb>
-        <el-card class="box-card"> 
+        <el-card class="box-card">
           <div>
             <span>My Words (Personally Added)</span>
             <el-button
@@ -22,7 +22,10 @@
         </el-card>
         <el-card v-for="item in wordlists" :key="item.name" class="box-card">
           <div slot="header" class="clearfix">
-            <span>{{computeWordListShowName(item.name)}}</span>
+            <div class="leftside">
+              <span>{{computeWordListShowName(item.name)}}</span>
+              <el-progress :percentage="item.percentage" :format="format" v-if="item.isBegin"></el-progress>
+            </div>
             <el-button
               style="float: right; padding: 3px 0"
               type="text"
@@ -100,11 +103,12 @@ export default {
         })
       })
       // map to array
-      for(const x in this.wordListsMap) {
-        let item = this.wordListsMap[x];
+      for (const x in this.wordListsMap) {
+        let item = this.wordListsMap[x]
         // compute timezero
-        item.timeZero = item.total - item.master - item.timeGt5 - item.timeLt5;
-        this.wordlists.push(item);
+        item.timeZero = item.total - item.master - item.timeGt5 - item.timeLt5
+        item.percentage = (item.master*100 / item.total).toFixed(1);
+        this.wordlists.push(item)
       }
     },
     getChartData: (v) => {
@@ -132,8 +136,8 @@ export default {
       })
     },
     computeWordListShowName(v) {
-      if(v==="toefl_intelligent") return "Toefl Intelligent";
-      if(v==="toefl_core") return "Toefl Core";
+      if (v === 'toefl_intelligent') return 'Toefl Intelligent'
+      if (v === 'toefl_core') return 'Toefl Core'
     }
   }
 }
@@ -149,5 +153,14 @@ export default {
 }
 .infotext {
   color: #909399;
+}
+.clearfix {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.leftside {
+  width: 300px;
 }
 </style>

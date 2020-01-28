@@ -49,6 +49,32 @@ app.post('/punch', async function (req, res) {
     });
 })
 
+// app.post('/delete', async function(req, res){
+//     console.log("reqbody: ", req.body);
+//     const { word } = req.body;
+// })
+
+app.post('/master', async function(req, res){
+    console.log("reqbody: ", req.body);
+    const { uid, word } = req.body;
+    sql = `INSERT INTO memory 
+    (uid, wordid, times, is_master, lastmem_time) VALUES (?,?,?,?,now()) \
+    on duplicate key update is_master=1`;
+    const masterRes = await query(sql, [uid,word.id,1,1]);
+    res.status(200).json({
+        msg: "success"
+    });
+})
+app.post('/unmaster', async function(req, res){
+    console.log("reqbody: ", req.body);
+    const { uid, word } = req.body;
+    sql = `UPDATE memory SET is_master=0 WHERE uid=? and wordid=?`;
+    const unmasterRes = await query(sql, [uid,word.id]);
+    res.status(200).json({
+        msg: "success"
+    });
+})
+
 module.exports = {
     path: '/api/word',
     handler: app

@@ -9,12 +9,15 @@ app.get('/test', function (req, res) {
 
 app.post('/', async function (req, res) {
     console.log("reqbody: ", req.body);
-    const { wordListName } = req.body;
+    const { wordListName,uid } = req.body;
     // TODO: 没有该wordlist的异常处理
     let queryWordListName = wordListName;
     // do query
-    let sql = `SELECT * FROM word WHERE source LIKE '%${queryWordListName}%'`;
-    const resData = await query(sql,[]);
+    let sql = `SELECT * FROM word \
+    LEFT JOIN memory ON word.id=memory.wordid \
+    WHERE source LIKE '%${queryWordListName}%' AND (uid=? OR uid is NULL) \
+    ORDER BY id`;
+    const resData = await query(sql,[uid]);
     res.status(200).json({
         words: resData
     });
