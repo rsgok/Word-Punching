@@ -28,7 +28,19 @@
             style="width: 100%"
             size="medium"
           >
-            <el-table-column label="Word" prop="text"></el-table-column>
+            <el-table-column label="Word" prop="text">
+              <template slot-scope="scope">
+                <!-- <span v-if="scope.row.times>0">{{ scope.row.text }}</span> -->
+                <span>{{ scope.row.text }}</span>
+                <el-tag
+                  size="mini"
+                  v-if="scope.row.times"
+                  :type="scope.row.is_master===1 ? 'success' : 'danger'"
+                  class="tag"
+                  effect="dark"
+                >{{scope.row.times}}</el-tag>
+              </template>
+            </el-table-column>
             <el-table-column min-width="150px" align="right" fixed="right" label="Handle">
               <template slot-scope="scope">
                 <el-button
@@ -119,8 +131,28 @@ export default {
       const startIndex = (page - 1) * this.limit
       this.tableData = this.allData.slice(startIndex, startIndex + this.limit)
     },
-    handlePunch(index, row) {
-      console.log(index, row)
+    async handlePunch(index, row) {
+      // console.log(index, row)
+      const res = await this.$axios({
+        url: '/api/word/punch',
+        method: 'post',
+        data: {
+          word: row.text,
+          uid: 1
+        }
+      })
+      if (res.status === 200) {
+        this.$notify({
+          title: 'PUNCH',
+          message: ':)'
+        })
+        this.allData.some((item, index, arr) => {
+          if (item.id === row.id) {
+            arr[index].times++
+            return true
+          }
+        })
+      }
     },
     // TODO 单词删除
     // async handleDelete(index, row) {
@@ -137,7 +169,7 @@ export default {
     //   for(let i=0;i<allData)
     // },
     async handleMaster(index, row) {
-      console.log(index, row)
+      // console.log(index, row)
       const res = await this.$axios({
         url: '/api/word/master',
         method: 'post',
@@ -146,24 +178,23 @@ export default {
           word: row
         }
       })
-      if(res.status===200) {
+      if (res.status === 200) {
         this.$notify({
           title: 'Congratulations',
-          message: "on Mastering the new word",
-          type:"success"
-        });
+          message: 'on Mastering the new word',
+          type: 'success'
+        })
         // change the current all data
-        this.allData.some((item, index, arr)=>{
-          if(item.id === row.id) {
-            arr[index].is_master = 1;
-            return true;
+        this.allData.some((item, index, arr) => {
+          if (item.id === row.id) {
+            arr[index].is_master = 1
+            return true
           }
-        });
-
+        })
       }
     },
     async handleUnMaster(index, row) {
-      console.log(index, row)
+      // console.log(index, row)
       const res = await this.$axios({
         url: '/api/word/unmaster',
         method: 'post',
@@ -172,23 +203,23 @@ export default {
           word: row
         }
       })
-      if(res.status===200) {
+      if (res.status === 200) {
         this.$notify({
           title: 'Success',
-          message: "on UnMastering the word",
-          type:"success"
-        });
+          message: 'on UnMastering the word',
+          type: 'success'
+        })
         // change the current all data
-        this.allData.some((item, index, arr)=>{
-          if(item.id === row.id) {
-            arr[index].is_master = 0;
-            return true;
+        this.allData.some((item, index, arr) => {
+          if (item.id === row.id) {
+            arr[index].is_master = 0
+            return true
           }
-        });
+        })
       }
     }
   }
-  
+
   // TODO 单词搜索逻辑优化
   // watch: {
   //   searchtext(newValue, oldValue) {
@@ -218,5 +249,8 @@ export default {
   align-items: center;
   justify-content: flex-end;
   margin-top: 20px;
+}
+.tag {
+  margin-left: 5px;
 }
 </style>
