@@ -27,7 +27,7 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['@/plugins/element-ui','@/plugins/axios'],
+  plugins: ['@/plugins/element-ui', '@/plugins/axios'],
   /*
    ** Nuxt.js dev-modules
    */
@@ -57,11 +57,24 @@ module.exports = {
    ** Build configuration
    */
   build: {
-    transpile: [/^element-ui/],
+    // transpile: [/^element-ui/],
+    analyze: true,
+    maxChunkSize: 300000,
+    babel: {
+      plugins: [
+        [
+          'component',
+          {
+            'libraryName': 'element-ui',
+            'styleLibraryName': 'theme-chalk'
+          }
+        ]
+      ]
+    },
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {}
+    extend(config, ctx) { }
   },
 
 

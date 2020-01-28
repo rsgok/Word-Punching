@@ -24,7 +24,7 @@
           <div slot="header" class="clearfix">
             <div class="leftside">
               <span>{{computeWordListShowName(item.name)}}</span>
-              <el-progress :percentage="item.percentage" :format="format" v-if="item.isBegin"></el-progress>
+              <el-progress :percentage="item.percentage" v-if="item.isBegin"></el-progress>
             </div>
             <el-button
               style="float: right; padding: 3px 0"
@@ -107,7 +107,7 @@ export default {
         let item = this.wordListsMap[x]
         // compute timezero
         item.timeZero = item.total - item.master - item.timeGt5 - item.timeLt5
-        item.percentage = (item.master*100 / item.total).toFixed(1);
+        item.percentage = Math.floor(item.master*100 / item.total);
         this.wordlists.push(item)
       }
     },
