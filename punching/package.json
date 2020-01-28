@@ -27,7 +27,9 @@
     "eslint-plugin-nuxt": ">=0.4.2",
     "eslint-plugin-prettier": "^3.0.1",
     "babel-eslint": "^10.0.1",
-    "babel-plugin-component": "^1.1.1"
+    "babel-plugin-component": "^1.1.1",
+    "mysql": "^2.18.0",
+    "nodemon": "^1.18.9",
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^1.0.1",
