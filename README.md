@@ -7,7 +7,7 @@
 
 ```bash
 # 在punching子目录下
-docker build -t wordpunching/(version) .
-docker run -dt -p (external-port):3000 --name="wordpunching" wordpunching/(version)
+docker build -t wordpunching:(version) .
+docker run -dt -p (external-port):3000 --name="wordpunching" wordpunching:(version)
 ```
 
