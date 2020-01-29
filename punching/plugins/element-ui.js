@@ -13,7 +13,6 @@ Vue.use(Tag);
 Vue.use(Progress);
 Vue.use(Card);
 Vue.use(Link);
-Vue.use(Notification);
 Vue.use(Breadcrumb);
 Vue.use(BreadcrumbItem);
 
