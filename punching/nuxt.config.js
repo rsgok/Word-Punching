@@ -61,6 +61,7 @@ module.exports = {
     analyze: true,
     maxChunkSize: 300000,
     babel: {
+      // presets: [["es2015", { "modules": false }]],
       plugins: [
         [
           'component',
