@@ -12,6 +12,7 @@
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore ."
   },
   "dependencies": {
+    "@nuxtjs/auth": "^4.8.5",
     "@nuxtjs/axios": "^5.9.3",
     "@nuxtjs/pwa": "^3.0.0-0",
     "chart.js": "^2.9.3",
