@@ -1,10 +1,10 @@
 const express = require('express')
-const app = express()
+const router = express.Router();
 
-const query = require('../utils/query')
+const query = require('../../utils/query')
 
 
-app.post('/punch', async function (req, res) {
+router.post('/punch', async function (req, res) {
     console.log("reqbody: ", req.body);
     const { uid, word } = req.body;
 
@@ -49,12 +49,12 @@ app.post('/punch', async function (req, res) {
     });
 })
 
-// app.post('/delete', async function(req, res){
+// router.post('/delete', async function(req, res){
 //     console.log("reqbody: ", req.body);
 //     const { word } = req.body;
 // })
 
-app.post('/master', async function(req, res){
+router.post('/master', async function(req, res){
     console.log("reqbody: ", req.body);
     const { uid, word } = req.body;
     sql = `INSERT INTO memory 
@@ -65,7 +65,7 @@ app.post('/master', async function(req, res){
         msg: "success"
     });
 })
-app.post('/unmaster', async function(req, res){
+router.post('/unmaster', async function(req, res){
     console.log("reqbody: ", req.body);
     const { uid, word } = req.body;
     sql = `UPDATE memory SET is_master=0 WHERE uid=? and wordid=?`;
@@ -75,7 +75,4 @@ app.post('/unmaster', async function(req, res){
     });
 })
 
-module.exports = {
-    path: '/api/word',
-    handler: app
-}
+module.exports = router;

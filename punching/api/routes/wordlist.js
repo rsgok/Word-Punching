@@ -1,13 +1,13 @@
-const express = require('express')
-const app = express()
+const express = require('express');
+const router = express.Router();
 
-const query = require('../utils/query')
+const query = require('../../utils/query')
 
-app.get('/test', function (req, res) {
+router.get('/test', function (req, res) {
     res.send("hello")
 })
 
-app.post('/', async function (req, res) {
+router.post('/', async function (req, res) {
     console.log("reqbody: ", req.body);
     const { wordListName,uid } = req.body;
     // TODO: 没有该wordlist的异常处理
@@ -23,7 +23,7 @@ app.post('/', async function (req, res) {
     });
 })
 
-app.post('/summarize', async function(req, res) {
+router.post('/summarize', async function(req, res) {
     console.log("reqbody: ", req.body);
     // const { wordListName } = req.body;
 
@@ -34,7 +34,4 @@ app.post('/summarize', async function(req, res) {
     });
 }) 
 
-module.exports = {
-    path: '/api/wordlist',
-    handler: app
-}
+module.exports = router;

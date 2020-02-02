@@ -28,6 +28,12 @@ export default {
   methods: {
     handleLogin() {
       console.log('login')
+      this.$auth.loginWith('local', {
+        data: {
+          username: 'your_username',
+          password: 'your_password'
+        }
+      })
     }
   }
 }

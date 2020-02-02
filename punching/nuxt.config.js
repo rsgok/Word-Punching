@@ -84,8 +84,7 @@ module.exports = {
    ** api configuration
    */
   serverMiddleware: [
-    '~/api/wordlist',
-    '~/api/word'
+    '~/api',
   ],
 
   /*
@@ -93,5 +92,16 @@ module.exports = {
    */
   router: {
     middleware: ['auth']
+  },
+  auth: {
+    local: {
+      endpoints: {
+        login: { url: '/api/auth/login', method: 'post', propertyName: 'token' },
+        // logout: { url: '/api/auth/logout', method: 'post' },
+        // user: { url: '/api/auth/user', method: 'get', propertyName: 'user' }
+      },
+      tokenRequired: true,
+      tokenType: 'bearer'
+    }
   }
 }

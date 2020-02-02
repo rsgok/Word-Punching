@@ -46,6 +46,7 @@
 <script>
 import piechart from '../../components/PieChart'
 export default {
+  auth: false,
   components: {
     piechart
   },
