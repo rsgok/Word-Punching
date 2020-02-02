@@ -5,7 +5,6 @@ const query = require('../../utils/query')
 
 
 router.post('/punch', async function (req, res) {
-    console.log("reqbody: ", req.body);
     const { uid, word } = req.body;
 
     // query whether exist
@@ -50,12 +49,11 @@ router.post('/punch', async function (req, res) {
 })
 
 // router.post('/delete', async function(req, res){
-//     console.log("reqbody: ", req.body);
+//     
 //     const { word } = req.body;
 // })
 
 router.post('/master', async function(req, res){
-    console.log("reqbody: ", req.body);
     const { uid, word } = req.body;
     sql = `INSERT INTO memory 
     (uid, wordid, times, is_master, lastmem_time) VALUES (?,?,?,?,now()) \
@@ -65,8 +63,7 @@ router.post('/master', async function(req, res){
         msg: "success"
     });
 })
-router.post('/unmaster', async function(req, res){
-    console.log("reqbody: ", req.body);
+router.post('/unmaster', async function(req, res){  
     const { uid, word } = req.body;
     sql = `UPDATE memory SET is_master=0 WHERE uid=? and wordid=?`;
     const unmasterRes = await query(sql, [uid,word.id]);

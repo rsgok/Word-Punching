@@ -30,8 +30,8 @@ export default {
       console.log('login')
       this.$auth.loginWith('local', {
         data: {
-          username: 'your_username',
-          password: 'your_password'
+          username: 'kysoo',
+          password: 'pass'
         }
       })
     }

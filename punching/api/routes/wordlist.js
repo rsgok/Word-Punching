@@ -8,7 +8,6 @@ router.get('/test', function (req, res) {
 })
 
 router.post('/', async function (req, res) {
-    console.log("reqbody: ", req.body);
     const { wordListName,uid } = req.body;
     // TODO: 没有该wordlist的异常处理
     let queryWordListName = wordListName;
@@ -24,9 +23,6 @@ router.post('/', async function (req, res) {
 })
 
 router.post('/summarize', async function(req, res) {
-    console.log("reqbody: ", req.body);
-    // const { wordListName } = req.body;
-
     let sql = `SELECT * FROM memory JOIN word ON memory.wordid=word.id`;
     const resData = await query(sql,[]);
     res.status(200).json({

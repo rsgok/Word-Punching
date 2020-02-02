@@ -3,6 +3,13 @@
     <div class="mainbox">
       <!-- TODO 动态适应样式-->
       <el-row>
+        <el-col :span="6" :offset="18">
+          <div>
+            <el-button type="text" @click="handleUnlogin">unlogin</el-button>
+          </div>
+        </el-col>
+      </el-row>
+      <el-row>
         <div class="title">Words Punching</div>
       </el-row>
       <el-row>
@@ -38,9 +45,11 @@ export default {
     }
   },
   methods: {
+    async handleUnlogin() {
+      await this.$auth.logout();
+    },
     async handleMark(val) {
       await console.log("handle mark");
-      
     },
     async handlePunch() {
       const word = this.input
