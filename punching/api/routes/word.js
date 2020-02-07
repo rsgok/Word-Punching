@@ -5,8 +5,9 @@ const query = require('../../utils/query')
 
 
 router.post('/punch', async function (req, res) {
-    const { uid, word } = req.body;
-
+    const { word } = req.body;
+    const { uid } = req.user;
+    
     // query whether exist
     let sql = `SELECT * FROM word WHERE text=?`;
     const ifExistQuery = await query(sql, [word]);
@@ -54,7 +55,8 @@ router.post('/punch', async function (req, res) {
 // })
 
 router.post('/master', async function(req, res){
-    const { uid, word } = req.body;
+    const { word } = req.body;
+    const { uid } = req.user;
     sql = `INSERT INTO memory 
     (uid, wordid, times, is_master, lastmem_time) VALUES (?,?,?,?,now()) \
     on duplicate key update is_master=1`;
@@ -64,7 +66,8 @@ router.post('/master', async function(req, res){
     });
 })
 router.post('/unmaster', async function(req, res){  
-    const { uid, word } = req.body;
+    const { word } = req.body;
+    const { uid } = req.user;
     sql = `UPDATE memory SET is_master=0 WHERE uid=? and wordid=?`;
     const unmasterRes = await query(sql, [uid,word.id]);
     res.status(200).json({

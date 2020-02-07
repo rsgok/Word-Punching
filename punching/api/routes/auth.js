@@ -7,14 +7,17 @@ const query = require('../../utils/query')
 
 router.post('/login', async function (req, res) {
     const {username, password} = req.body;
-    const sql = `SELECT password FROM user WHERE uname=?`;
+    const sql = `SELECT password, uid FROM user WHERE uname=?`;
     const passwordQuery = await query(sql, [username]);
     // console.log(passwordQuery);
     if(passwordQuery.length!==0 && passwordQuery[0].password === password) {
         console.log("login success");
         
         const accessToken = jwt.sign(
-            {username},
+            {
+                uname: username,
+                uid: passwordQuery[0].uid
+            },
             myconfig.jwtSecret,
             {
                 // 授权时效1day

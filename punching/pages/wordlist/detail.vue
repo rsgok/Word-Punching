@@ -115,12 +115,12 @@ export default {
   },
   methods: {
     async fetchData(wordListName) {
+      // const {uid} = this.$auth.user;
       const res = await this.$axios({
         url: '/api/wordlist',
         method: 'post',
         data: {
-          wordListName,
-          uid: 1
+          wordListName
         }
       })
       this.allData = res.data.words
@@ -140,8 +140,7 @@ export default {
         url: '/api/word/punch',
         method: 'post',
         data: {
-          word: row.text,
-          uid: 1
+          word: row.text
         }
       })
       if (res.status === 200) {
@@ -177,7 +176,6 @@ export default {
         url: '/api/word/master',
         method: 'post',
         data: {
-          uid: 1,
           word: row
         }
       })
@@ -202,7 +200,6 @@ export default {
         url: '/api/word/unmaster',
         method: 'post',
         data: {
-          uid: 1,
           word: row
         }
       })
