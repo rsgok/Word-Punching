@@ -9,25 +9,13 @@
           :xs="{ span: 8, offset: 15 }"
         >
           <div class="header">
-            <el-dropdown>
-              <el-button>
-                {{$auth.user.uname}}
-                <i class="el-icon-arrow-down el-icon--right"></i>
-              </el-button>
+            <el-dropdown @command="handleDropdownCommand"
+            size="medium" split-button>
+              {{$auth.user.uname}}
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>
-                  <el-button type="text" @click="handleUnlogin">unlogin</el-button>
-                </el-dropdown-item>
-                <el-dropdown-item>
-                  <nuxt-link to="/statistics">
-                    <el-button type="text">Statistics</el-button>
-                  </nuxt-link>
-                </el-dropdown-item>
-                <el-dropdown-item>
-                  <nuxt-link to="/wordlist">
-                    <el-button type="text">WordList</el-button>
-                  </nuxt-link>
-                </el-dropdown-item>
+                <el-dropdown-item command="gotoStatistics">Statistics</el-dropdown-item>
+                <el-dropdown-item command="gotoWordList">WordList</el-dropdown-item>
+                <el-dropdown-item divided command="handleUnlogin">Logout</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -65,6 +53,21 @@ export default {
     }
   },
   methods: {
+    handleDropdownCommand(command) {
+      if(command === "gotoStatistics") this.gotoStatistics();
+      else if(command === "gotoWordList") this.gotoWordList();
+      else if(command === "handleUnlogin") this.handleUnlogin();
+    },
+    gotoStatistics() {
+      this.$router.push({
+        path: '/statistics'
+      })
+    },
+    gotoWordList() {
+      this.$router.push({
+        path: '/wordlist'
+      })
+    },
     async handleUnlogin() {
       await this.$auth.logout()
       this.$router.push({

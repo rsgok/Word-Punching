@@ -50,7 +50,7 @@ export default {
 .container {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   background: url('http://q4pjcl3ln.bkt.clouddn.com/RavenWolf.jpg') center
     center no-repeat;
@@ -59,18 +59,19 @@ export default {
 }
 .mainbox {
   width: 100vw;
+  margin-bottom: 30vh;
 }
 .loginbox {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
-  height: 50vh;
+  height: 45vh;
 }
 .loginText {
   font-size: 50px;
   font-weight: bold;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 }
 .el-button {
   width: 100%;
