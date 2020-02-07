@@ -2,10 +2,13 @@
   <div class="container">
     <div class="mainbox">
       <el-row>
-        <el-col :span="6" :offset="9">
+        <el-col 
+        :md="{ span: 6, offset: 9 }"
+        :sm="{ span: 12, offset: 5 }"
+        :xs="{ span: 20, offset: 2 }">
           <el-card shadow="never">
             <div class="loginbox">
-              <div class="loginText">Login</div>
+              <div class="loginText">Word Punching</div>
               <el-input v-model="uname" placeholder="user name"></el-input>
               <el-input v-model="upassword" placeholder="user password"></el-input>
               <el-button type="primary" @click="handleLogin">Login</el-button>
@@ -18,7 +21,7 @@
 </template>
 <script>
 export default {
-  auth: false,
+  auth: 'guest',
   data() {
     return {
       uname: '',
@@ -28,11 +31,16 @@ export default {
   methods: {
     handleLogin() {
       console.log('login')
+      const username = this.uname;
+      const password = this.upassword;
       this.$auth.loginWith('local', {
         data: {
-          username: 'kysoo',
-          password: 'pass'
+          username,
+          password
         }
+      }).catch(e => {
+        // console.log(e);
+        this.$message.error('login fail');
       })
     }
   }
@@ -57,10 +65,12 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
-  height: 30vh;
+  height: 50vh;
 }
 .loginText {
-  font-size: 20px;
+  font-size: 50px;
+  font-weight: bold;
+  margin-bottom: 50px;
 }
 .el-button {
   width: 100%;

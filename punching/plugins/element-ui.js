@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { Row, Col, Input, Pagination, Button, Table, TableColumn, Tag, Progress, Card, Link, Notification, Breadcrumb, BreadcrumbItem } from 'element-ui'
+import { Row, Col, Input, Pagination, Button, Table, TableColumn, Tag, Progress, Card, Link, Notification, Breadcrumb, BreadcrumbItem, Message } from 'element-ui'
 // import locale from 'element-ui/lib/locale/lang/en'
 
 Vue.use(Row);
@@ -17,3 +17,4 @@ Vue.use(Breadcrumb);
 Vue.use(BreadcrumbItem);
 
 Vue.prototype.$notify = Notification;
+Vue.prototype.$message = Message;
