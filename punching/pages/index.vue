@@ -3,20 +3,44 @@
     <div class="mainbox">
       <!-- TODO 动态适应样式-->
       <el-row>
-        <el-col :span="6" :offset="15">
+        <el-col
+          :md="{ span: 8, offset: 10 }"
+          :sm="{ span: 8, offset: 15 }"
+          :xs="{ span: 8, offset: 15 }"
+        >
           <div class="header">
-            <el-button type="text" @click="handleUnlogin">unlogin</el-button>
+            <el-dropdown>
+              <el-button>
+                {{$auth.user.uname}}
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item>
+                  <el-button type="text" @click="handleUnlogin">unlogin</el-button>
+                </el-dropdown-item>
+                <el-dropdown-item>
+                  <nuxt-link to="/statistics">
+                    <el-button type="text">Statistics</el-button>
+                  </nuxt-link>
+                </el-dropdown-item>
+                <el-dropdown-item>
+                  <nuxt-link to="/wordlist">
+                    <el-button type="text">WordList</el-button>
+                  </nuxt-link>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </div>
         </el-col>
       </el-row>
       <el-row>
-        <div class="title">Words Punching</div>
+        <div class="title">Word Punching</div>
       </el-row>
       <el-row>
         <el-col
           :md="{ span: 10, offset: 6 }"
-          :sm="{ span: 15, offset: 2 }"
-          :xs="{ span: 15, offset: 2 }"
+          :sm="{ span: 16, offset: 1 }"
+          :xs="{ span: 16, offset: 1 }"
         >
           <el-input v-model="input" placeholder="Input Word To Punch"></el-input>
         </el-col>
@@ -26,18 +50,6 @@
           :xs="{ span: 2, offset: 1 }"
         >
           <el-button type="primary" @click="handlePunch">Punch</el-button>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="8" :offset="8">
-          <div class="btn-links">
-            <nuxt-link to="/statistics">
-              <el-button type="text">Statistics</el-button>
-            </nuxt-link>
-            <nuxt-link to="/wordlist">
-              <el-button type="text">WordList</el-button>
-            </nuxt-link>
-          </div>
         </el-col>
       </el-row>
     </div>
@@ -56,7 +68,7 @@ export default {
     async handleUnlogin() {
       await this.$auth.logout()
       this.$router.push({
-        path: '/login',
+        path: '/login'
       })
     },
     async handleMark(val) {
@@ -144,7 +156,8 @@ export default {
 }
 .title {
   font-size: 60px;
-  margin-bottom: 80px;
+  margin-bottom: 60px;
+  word-wrap: break-word;
 }
 .input-item {
   display: flex;
@@ -162,5 +175,9 @@ export default {
 .header {
   margin-top: 50px;
   margin-bottom: 100px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
 }
 </style>
