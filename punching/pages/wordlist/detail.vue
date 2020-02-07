@@ -35,12 +35,12 @@
                   <span>{{ scope.row.text }}</span>
                 </el-link>
                 <el-tag
-                    size="mini"
-                    v-if="scope.row.times"
-                    :type="scope.row.is_master===1 ? 'success' : 'danger'"
-                    class="tag"
-                    effect="dark"
-                  >{{scope.row.times}}</el-tag>
+                  size="mini"
+                  v-if="scope.row.times"
+                  :type="scope.row.is_master===1 ? 'success' : 'danger'"
+                  class="tag"
+                  effect="dark"
+                >{{scope.row.times}}</el-tag>
               </template>
             </el-table-column>
             <el-table-column min-width="150px" align="right" fixed="right" label="Handle">
@@ -66,7 +66,6 @@
                 <el-button
                   v-if="wordListName==='mywords'"
                   size="mini"
-                  disabled
                   type="danger"
                   @click="handleDelete(scope.$index, scope.row)"
                 >Delete</el-button>
@@ -157,16 +156,28 @@ export default {
       }
     },
     // TODO 单词删除
-    // async handleDelete(index, row) {
-    //   console.log(index, row)
-    //   const res = await this.$axios({
-    //     url: '/api/word/delete',
-    //     method: 'post',
-    //     data: {
-    //       word: row
-    //     }
-    //   })
-    // },
+    async handleDelete(index, row) {
+      // console.log(index, row)
+      const res = await this.$axios({
+        url: '/api/word/delete',
+        method: 'post',
+        data: {
+          word: row
+        }
+      })
+      if (res.status === 200) {
+        this.$notify({
+          title: 'Deleted',
+        })
+        this.allData.some((item, index, arr) => {
+          if (item.id === row.id) {
+            arr.splice(index, 1);
+            return true
+          }
+        })
+        this.handlePage(this.page)
+      }
+    },
     // updateAllData(word,row) {
     //   for(let i=0;i<allData)
     // },
@@ -189,6 +200,7 @@ export default {
         this.allData.some((item, index, arr) => {
           if (item.id === row.id) {
             arr[index].is_master = 1
+            arr[index].times = 1
             return true
           }
         })

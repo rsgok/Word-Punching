@@ -17,6 +17,12 @@ router.post('/', async function (req, res) {
     LEFT JOIN memory ON word.id=memory.wordid \
     WHERE source LIKE '%${queryWordListName}%' AND (uid=? OR uid is NULL) \
     ORDER BY id`;
+    if(queryWordListName === 'mywords') {
+        sql = `SELECT * FROM word \
+        LEFT JOIN memory ON word.id=memory.wordid \
+        WHERE source LIKE '%${queryWordListName}%' AND (uid=?) \
+        ORDER BY id`;
+    }
     const resData = await query(sql,[uid]);
     res.status(200).json({
         words: resData
