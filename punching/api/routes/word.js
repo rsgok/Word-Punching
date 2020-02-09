@@ -1,13 +1,13 @@
 const express = require('express')
-const app = express()
+const router = express.Router();
 
-const query = require('../utils/query')
+const query = require('../../utils/query')
 
 
-app.post('/punch', async function (req, res) {
-    console.log("reqbody: ", req.body);
-    const { uid, word } = req.body;
-
+router.post('/punch', async function (req, res) {
+    const { word } = req.body;
+    const { uid } = req.user;
+    
     // query whether exist
     let sql = `SELECT * FROM word WHERE text=?`;
     const ifExistQuery = await query(sql, [word]);
@@ -49,14 +49,14 @@ app.post('/punch', async function (req, res) {
     });
 })
 
-// app.post('/delete', async function(req, res){
-//     console.log("reqbody: ", req.body);
+// router.post('/delete', async function(req, res){
+//     
 //     const { word } = req.body;
 // })
 
-app.post('/master', async function(req, res){
-    console.log("reqbody: ", req.body);
-    const { uid, word } = req.body;
+router.post('/master', async function(req, res){
+    const { word } = req.body;
+    const { uid } = req.user;
     sql = `INSERT INTO memory 
     (uid, wordid, times, is_master, lastmem_time) VALUES (?,?,?,?,now()) \
     on duplicate key update is_master=1`;
@@ -65,9 +65,9 @@ app.post('/master', async function(req, res){
         msg: "success"
     });
 })
-app.post('/unmaster', async function(req, res){
-    console.log("reqbody: ", req.body);
-    const { uid, word } = req.body;
+router.post('/unmaster', async function(req, res){  
+    const { word } = req.body;
+    const { uid } = req.user;
     sql = `UPDATE memory SET is_master=0 WHERE uid=? and wordid=?`;
     const unmasterRes = await query(sql, [uid,word.id]);
     res.status(200).json({
@@ -75,7 +75,4 @@ app.post('/unmaster', async function(req, res){
     });
 })
 
-module.exports = {
-    path: '/api/word',
-    handler: app
-}
+module.exports = router;

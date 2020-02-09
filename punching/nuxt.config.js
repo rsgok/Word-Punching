@@ -41,8 +41,8 @@ module.exports = {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/pwa',
-    '@nuxtjs/eslint-module'
+    '@nuxtjs/auth',
+    '@nuxtjs/pwa'
   ],
   /*
    ** Axios module configuration
@@ -62,6 +62,7 @@ module.exports = {
     // analyze: true,
     maxChunkSize: 300000,
     babel: {
+      // presets: [["es2015", { "modules": false }]],
       plugins: [
         [
           'component',
@@ -83,7 +84,31 @@ module.exports = {
    ** api configuration
    */
   serverMiddleware: [
-    '~/api/wordlist',
-    '~/api/word'
+    '~/api',
   ],
+
+  /*
+   ** router auth configuration
+   */
+  router: {
+    middleware: ['auth']
+  },
+  auth: {
+    local: {
+      endpoints: {
+        login: { url: '/api/auth/login', method: 'post', propertyName: 'token' },
+        logout: { url: '/api/auth/logout', method: 'post' },
+        user: { url: '/api/auth/user', method: 'get', propertyName: 'user' }
+      }
+    },
+    redirect: {
+      login: '/login',
+      logout: '/',
+      callback: '/login',
+      home: '/'
+    },
+    resetOnError: true,
+    rewriteRedirects: true,
+    fullPathRedirect: true
+  }
 }

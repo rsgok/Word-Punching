@@ -3,18 +3,33 @@
     <div class="mainbox">
       <!-- TODO 动态适应样式-->
       <el-row>
+        <el-col :span="6" :offset="15">
+          <div class="header">
+            <el-button type="text" @click="handleUnlogin">unlogin</el-button>
+          </div>
+        </el-col>
+      </el-row>
+      <el-row>
         <div class="title">Words Punching</div>
       </el-row>
       <el-row>
-        <el-col :span="10" :offset="6">
+        <el-col
+          :md="{ span: 10, offset: 6 }"
+          :sm="{ span: 15, offset: 2 }"
+          :xs="{ span: 15, offset: 2 }"
+        >
           <el-input v-model="input" placeholder="Input Word To Punch"></el-input>
         </el-col>
-        <el-col :span="2">
+        <el-col
+          :md="{ span: 2, offset: 0 }"
+          :sm="{ span: 2, offset: 1 }"
+          :xs="{ span: 2, offset: 1 }"
+        >
           <el-button type="primary" @click="handlePunch">Punch</el-button>
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="4" :offset="10">
+        <el-col :span="8" :offset="8">
           <div class="btn-links">
             <nuxt-link to="/statistics">
               <el-button type="text">Statistics</el-button>
@@ -38,9 +53,14 @@ export default {
     }
   },
   methods: {
+    async handleUnlogin() {
+      await this.$auth.logout()
+      this.$router.push({
+        path: '/login',
+      })
+    },
     async handleMark(val) {
-      await console.log("handle mark");
-      
+      await console.log('handle mark')
     },
     async handlePunch() {
       const word = this.input
@@ -70,7 +90,7 @@ export default {
           'Punch the word ',
           h('el-tag', null, detail.text),
           ' successfully!'
-        ]),
+        ])
         // TODO 主页快速master单词
         // onClose: () => {
         //   // if times>=5
@@ -116,7 +136,7 @@ export default {
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   text-align: center;
 }
 .mainbox {
@@ -138,5 +158,9 @@ export default {
   justify-content: space-around;
   align-items: center;
   margin-top: 30px;
+}
+.header {
+  margin-top: 50px;
+  margin-bottom: 100px;
 }
 </style>
