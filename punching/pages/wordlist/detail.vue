@@ -24,31 +24,48 @@
         <el-card class="box-card">
           <el-input v-model="searchtext" placeholder="search" />
           <el-table
-            :data="tableData.filter(data => searchtext=='' || data.text.toLowerCase().includes(searchtext.toLowerCase()))"
+            :data="tableData"
             style="width: 100%"
             size="medium"
           >
-            <el-table-column
-              label="Word"
-              prop="text"
-              :filters="[{text: 'master', value: 'master'},{text: 'unmaster', value: 'unmaster'}]"
-              :filter-method="filterHandler"
+          <el-table-column
+              label="Times"
+              width="80px"
             >
               <template slot-scope="scope">
-                <!-- <span v-if="scope.row.times>0">{{ scope.row.text }}</span> -->
-                <el-link :href="basicExternalUrl+scope.row.href" target="_blank">
-                  <span>{{ scope.row.text }}</span>
-                </el-link>
                 <el-tag
                   size="mini"
                   v-if="scope.row.times"
                   :type="scope.row.is_master===1 ? 'success' : 'danger'"
                   class="tag"
-                  effect="dark"
                 >{{scope.row.times}}</el-tag>
+                <el-tag
+                  size="mini"
+                  v-else
+                  type="info"
+                  class="tag"
+                >0</el-tag>
               </template>
             </el-table-column>
-            <el-table-column min-width="150px" align="right" fixed="right" label="Handle">
+            <el-table-column
+              label="Word"
+              prop="text"
+              width="150px"
+            >
+              <template slot-scope="scope">
+                <el-link :href="basicExternalUrl+scope.row.text" target="_blank">
+                  <span>{{ scope.row.text }}</span>
+                </el-link>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="Meaning"
+            >
+            <template slot-scope="scope">
+              {{ computeMeaning(scope.row.meaning) }}
+            </template>
+            </el-table-column>
+            <el-table-column align="right" fixed="right" label="Handle">
               <template slot-scope="scope">
                 <el-button
                   v-if="!scope.row.is_master"
@@ -106,7 +123,7 @@ export default {
   },
   data() {
     return {
-      basicExternalUrl: 'https://www.koolearn.com',
+      basicExternalUrl: 'http://www.youdao.com/w/eng/',
       wordListName: null,
       totalNumber: 50,
       page: 1,
@@ -118,11 +135,13 @@ export default {
     }
   },
   methods: {
-    filterHandler(value, row, column) {
-      // const property = column['property'];
-      // console.log(value, row, column);
-      
-      return row.is_master === 1
+    computeMeaning(meaning) {
+      const jsonm = JSON.parse(meaning)
+      let res = ""
+      jsonm.forEach(item => {
+        res = res + item
+      });
+      return res;
     },
     async fetchData(wordListName) {
       // const {uid} = this.$auth.user;
