@@ -9,7 +9,7 @@ router.post('/punch', async function (req, res) {
     const { uid } = req.user;
     
     // query whether exist
-    let sql = `SELECT * FROM word WHERE text=?`;
+    let sql = `SELECT id FROM word WHERE text=?`;
     const ifExistQuery = await query(sql, [word]);
     const ifExist = ifExistQuery.length === 0 ? false : true;
 
@@ -36,7 +36,7 @@ router.post('/punch', async function (req, res) {
 
     // get detail info
     // TODO 返回数据精确化, 比如password不应该返回
-    sql = `SELECT * FROM memory \
+    sql = `SELECT word.id, word.text FROM memory \
     JOIN user ON memory.uid=user.uid \
     JOIN word ON memory.wordid=word.id \
     WHERE wordid = ?`
@@ -50,31 +50,31 @@ router.post('/punch', async function (req, res) {
 })
 
 router.post('/delete', async function(req, res){
-    const { word } = req.body;
+    const { wordid } = req.body;
     const { uid } = req.user;
     const sql = `DELETE FROM memory WHERE uid=? and wordid=?`
-    const deleteRes = await query(sql, [uid, word.id])
+    const deleteRes = await query(sql, [uid, wordid])
     res.status(200).json({
         msg: "success"
     });
 })
 
 router.post('/master', async function(req, res){
-    const { word } = req.body;
+    const { wordid } = req.body;
     const { uid } = req.user;
     const sql = `INSERT INTO memory 
     (uid, wordid, times, is_master, lastmem_time) VALUES (?,?,?,?,now()) \
     on duplicate key update is_master=1`;
-    const masterRes = await query(sql, [uid,word.id,1,1]);
+    const masterRes = await query(sql, [uid,wordid,1,1]);
     res.status(200).json({
         msg: "success"
     });
 })
 router.post('/unmaster', async function(req, res){  
-    const { word } = req.body;
+    const { wordid } = req.body;
     const { uid } = req.user;
     const sql = `UPDATE memory SET is_master=0 WHERE uid=? and wordid=?`;
-    const unmasterRes = await query(sql, [uid,word.id]);
+    const unmasterRes = await query(sql, [uid,wordid]);
     res.status(200).json({
         msg: "success"
     });

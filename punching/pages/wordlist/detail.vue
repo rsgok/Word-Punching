@@ -23,15 +23,10 @@
         </div>
         <el-card class="box-card">
           <el-input v-model="searchtext" placeholder="search" />
-          <el-table
-            :data="tableData"
-            style="width: 100%"
-            size="medium"
-          >
-          <el-table-column
-              label="Times"
-              width="80px"
-            >
+        </el-card>
+        <el-card class="box-card">
+          <el-table :data="tableData" style="width: 100%" size="medium" :stripe="true">
+            <el-table-column label="Times" width="80px">
               <template slot-scope="scope">
                 <el-tag
                   size="mini"
@@ -39,58 +34,56 @@
                   :type="scope.row.is_master===1 ? 'success' : 'danger'"
                   class="tag"
                 >{{scope.row.times}}</el-tag>
-                <el-tag
-                  size="mini"
-                  v-else
-                  type="info"
-                  class="tag"
-                >0</el-tag>
+                <el-tag size="mini" v-else type="info" class="tag">0</el-tag>
               </template>
             </el-table-column>
-            <el-table-column
-              label="Word"
-              prop="text"
-              width="150px"
-            >
+            <el-table-column label="Word" prop="text" width="150px">
               <template slot-scope="scope">
                 <el-link :href="basicExternalUrl+scope.row.text" target="_blank">
                   <span>{{ scope.row.text }}</span>
                 </el-link>
               </template>
             </el-table-column>
-            <el-table-column
-              label="Meaning"
-            >
-            <template slot-scope="scope">
-              {{ computeMeaning(scope.row.meaning) }}
-            </template>
+            <el-table-column label="Meaning">
+              <template slot-scope="scope">
+                <span
+                  v-if="scope.row.meaning_show===true"
+                  @click="handleMeaningClick(scope.$index)"
+                >{{ computeMeaning(scope.row.meaning) }}</span>
+                <span v-else @click="handleMeaningClick(scope.$index)">
+                  <i class="el-icon-view"></i>
+                </span>
+              </template>
             </el-table-column>
-            <el-table-column align="right" fixed="right" label="Handle">
+            <el-table-column
+              fixed="right"
+              label="Handle"
+              align="right"
+              :width="wordListName==='mywords' ? '200px':'0px'"
+            >
               <template slot-scope="scope">
                 <el-button
                   v-if="!scope.row.is_master"
-                  size="mini"
-                  type="primary"
+                  type="text"
                   @click="handlePunch(scope.$index, scope.row)"
                 >Punch</el-button>
                 <el-button
                   v-if="!scope.row.is_master"
-                  size="mini"
-                  type="success"
+                  type="text"
                   @click="handleMaster(scope.$index, scope.row)"
                 >Master</el-button>
                 <el-button
                   v-if="scope.row.is_master===1"
-                  size="mini"
-                  type="success"
+                  type="text"
                   @click="handleUnMaster(scope.$index, scope.row)"
                 >UnMaster</el-button>
                 <el-button
                   v-if="wordListName==='mywords'"
                   size="mini"
                   type="danger"
+                  icon="el-icon-delete"
                   @click="handleDelete(scope.$index, scope.row)"
-                >Delete</el-button>
+                ></el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -119,7 +112,7 @@ export default {
       })
     }
     this.wordListName = this.$route.query.wordListName
-    this.fetchData(this.wordListName)
+    this.getWordListDataNumber(this.wordListName)
   },
   data() {
     return {
@@ -130,38 +123,56 @@ export default {
       limit: 50,
       paginationDisabled: false,
       tableData: [],
-      searchtext: '',
-      allData: []
+      searchtext: ''
     }
   },
   methods: {
     computeMeaning(meaning) {
       const jsonm = JSON.parse(meaning)
-      let res = ""
-      jsonm.forEach(item => {
-        res = res + item
-      });
-      return res;
+      let res = ''
+      jsonm.forEach((item) => {
+        res = res + ' ' + item
+      })
+      return res
     },
-    async fetchData(wordListName) {
-      // const {uid} = this.$auth.user;
+    handleMeaningClick(index) {
+      let item = this.tableData[index]
+      item['meaning_show'] = !item['meaning_show']
+      this.$set(this.tableData, index, item)
+    },
+    async getWordListDataNumber(wordListName) {
       const res = await this.$axios({
-        url: '/api/wordlist',
+        url: '/api/wordlist/number',
         method: 'post',
         data: {
           wordListName
         }
       })
-      this.allData = res.data.words
-      this.totalNumber = this.allData.length
+      this.totalNumber = res.data.number
       this.handlePage(1)
     },
+    async fetchData(startIndex, limit) {
+      const wordListName = this.wordListName
+      const res = await this.$axios({
+        url: '/api/wordlist',
+        method: 'post',
+        data: {
+          wordListName,
+          startIndex,
+          limit
+        }
+      })
+      this.tableData = res.data.words
+      this.tableData.map((item) => {
+        item['meaning_show'] = false
+        return item
+      })
+    },
     handlePage(page) {
-      console.log('page change to: ', page)
-
       this.page = page
-      const startIndex = (page - 1) * this.limit
-      this.tableData = this.allData.slice(startIndex, startIndex + this.limit)
+      const limit = this.limit
+      const startIndex = (page - 1) * limit
+      this.fetchData(startIndex, limit)
     },
     async handlePunch(index, row) {
       // console.log(index, row)
@@ -177,7 +188,7 @@ export default {
           title: 'PUNCH',
           message: ':)'
         })
-        this.allData.some((item, index, arr) => {
+        this.tableData.some((item, index, arr) => {
           if (item.id === row.id) {
             arr[index].times++
             return true
@@ -185,21 +196,20 @@ export default {
         })
       }
     },
-    // TODO 单词删除
     async handleDelete(index, row) {
       // console.log(index, row)
       const res = await this.$axios({
         url: '/api/word/delete',
         method: 'post',
         data: {
-          word: row
+          wordid: row.id
         }
       })
       if (res.status === 200) {
         this.$notify({
           title: 'Deleted'
         })
-        this.allData.some((item, index, arr) => {
+        this.tableData.some((item, index, arr) => {
           if (item.id === row.id) {
             arr.splice(index, 1)
             return true
@@ -208,16 +218,13 @@ export default {
         this.handlePage(this.page)
       }
     },
-    // updateAllData(word,row) {
-    //   for(let i=0;i<allData)
-    // },
     async handleMaster(index, row) {
       // console.log(index, row)
       const res = await this.$axios({
         url: '/api/word/master',
         method: 'post',
         data: {
-          word: row
+          wordid: row.id
         }
       })
       if (res.status === 200) {
@@ -227,7 +234,7 @@ export default {
           type: 'success'
         })
         // change the current all data
-        this.allData.some((item, index, arr) => {
+        this.tableData.some((item, index, arr) => {
           if (item.id === row.id) {
             arr[index].is_master = 1
             arr[index].times = 1
@@ -242,7 +249,7 @@ export default {
         url: '/api/word/unmaster',
         method: 'post',
         data: {
-          word: row
+          wordid: row.id
         }
       })
       if (res.status === 200) {
@@ -252,7 +259,7 @@ export default {
           type: 'success'
         })
         // change the current all data
-        this.allData.some((item, index, arr) => {
+        this.tableData.some((item, index, arr) => {
           if (item.id === row.id) {
             arr[index].is_master = 0
             return true
