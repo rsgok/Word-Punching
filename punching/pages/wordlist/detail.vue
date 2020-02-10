@@ -21,8 +21,8 @@
             @current-change="handlePage"
           ></el-pagination>
         </div>
-        <el-card class="box-card">
-          <el-input v-model="searchtext" placeholder="search" />
+        <el-card class="box-card" v-if="wordListName!=='mywords'">
+          <el-input v-model="searchtext" placeholder="search word" @input="handleSearch" clearable/>
         </el-card>
         <el-card class="box-card">
           <el-table :data="tableData" style="width: 100%" size="medium" :stripe="true">
@@ -127,6 +127,24 @@ export default {
     }
   },
   methods: {
+    async handleSearch(value) {
+      if(value === "") {
+        this.paginationDisabled = false;
+        this.handlePage(this.page);
+        return;
+      }
+      const wordListName = this.wordListName;
+      this.paginationDisabled = true;
+      const res = await this.$axios({
+        url: '/api/wordlist/search',
+        method: 'post',
+        data: {
+          wordListName,
+          word: value
+        }
+      })
+      this.tableData = res.data.words
+    },
     computeMeaning(meaning) {
       if (meaning === null) return 'no meaning now...'
       const jsonm = JSON.parse(meaning)
@@ -254,18 +272,6 @@ export default {
       }
     }
   }
-
-  // TODO 单词搜索逻辑优化
-  // watch: {
-  //   searchtext(newValue, oldValue) {
-  //     if(newValue=='') {
-  //       this.handlePage(this.page);
-  //       this.totalNumber = this.allData.length;
-  //     } else {
-  //       this.
-  //     }
-  //   }
-  // }
 }
 </script>
 <style scoped>

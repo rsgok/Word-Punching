@@ -49,7 +49,20 @@ router.post('/number', async function(req, res){
     res.status(200).json({
         number: resData[0].count
     });
-}) 
+})
+
+router.post('/search', async function(req, res) {
+    const { wordListName, word } = req.body;
+    const { uid } = req.user;
+    const sql = `SELECT word.id, word.text, word.source, word.meaning, \
+    memory.times, memory.is_master FROM word \
+    LEFT JOIN memory ON word.id=memory.wordid \
+    WHERE source LIKE '%${wordListName}%' AND text LIKE '${word}%' AND (uid=${uid} OR uid is NULL)`
+    const resData = await query(sql,[]);
+    res.status(200).json({
+        words: resData
+    });
+})
 
 router.post('/summarize', async function(req, res) {
     const { uid } = req.user;
