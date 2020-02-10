@@ -128,6 +128,7 @@ export default {
   },
   methods: {
     computeMeaning(meaning) {
+      if (meaning === null) return 'no meaning now...'
       const jsonm = JSON.parse(meaning)
       let res = ''
       jsonm.forEach((item) => {
@@ -188,12 +189,9 @@ export default {
           title: 'PUNCH',
           message: ':)'
         })
-        this.tableData.some((item, index, arr) => {
-          if (item.id === row.id) {
-            arr[index].times++
-            return true
-          }
-        })
+        let item = this.tableData[index]
+        item.times++
+        this.$set(this.tableData, index, item)
       }
     },
     async handleDelete(index, row) {
@@ -209,12 +207,7 @@ export default {
         this.$notify({
           title: 'Deleted'
         })
-        this.tableData.some((item, index, arr) => {
-          if (item.id === row.id) {
-            arr.splice(index, 1)
-            return true
-          }
-        })
+        this.tableData.splice(index, 1)
         this.handlePage(this.page)
       }
     },
@@ -234,13 +227,9 @@ export default {
           type: 'success'
         })
         // change the current all data
-        this.tableData.some((item, index, arr) => {
-          if (item.id === row.id) {
-            arr[index].is_master = 1
-            arr[index].times = 1
-            return true
-          }
-        })
+        let item = this.tableData[index]
+        item.is_master = 1
+        this.$set(this.tableData, index, item)
       }
     },
     async handleUnMaster(index, row) {
@@ -259,12 +248,9 @@ export default {
           type: 'success'
         })
         // change the current all data
-        this.tableData.some((item, index, arr) => {
-          if (item.id === row.id) {
-            arr[index].is_master = 0
-            return true
-          }
-        })
+        let item = this.tableData[index]
+        item.is_master = 0
+        this.$set(this.tableData, index, item)
       }
     }
   }

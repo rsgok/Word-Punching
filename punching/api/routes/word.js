@@ -63,9 +63,9 @@ router.post('/master', async function(req, res){
     const { wordid } = req.body;
     const { uid } = req.user;
     const sql = `INSERT INTO memory 
-    (uid, wordid, times, is_master, lastmem_time) VALUES (?,?,?,?,now()) \
+    (uid, wordid, is_master, lastmem_time) VALUES (?,?,?,now()) \
     on duplicate key update is_master=1`;
-    const masterRes = await query(sql, [uid,wordid,1,1]);
+    const masterRes = await query(sql, [uid,wordid,1]);
     res.status(200).json({
         msg: "success"
     });
