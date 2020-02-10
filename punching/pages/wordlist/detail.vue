@@ -22,13 +22,18 @@
           ></el-pagination>
         </div>
         <el-card class="box-card">
-          <el-input v-model="searchtext" size="mini" placeholder="search" />
+          <el-input v-model="searchtext" placeholder="search" />
           <el-table
             :data="tableData.filter(data => searchtext=='' || data.text.toLowerCase().includes(searchtext.toLowerCase()))"
             style="width: 100%"
             size="medium"
           >
-            <el-table-column label="Word" prop="text">
+            <el-table-column
+              label="Word"
+              prop="text"
+              :filters="[{text: 'master', value: 'master'},{text: 'unmaster', value: 'unmaster'}]"
+              :filter-method="filterHandler"
+            >
               <template slot-scope="scope">
                 <!-- <span v-if="scope.row.times>0">{{ scope.row.text }}</span> -->
                 <el-link :href="basicExternalUrl+scope.row.href" target="_blank">
@@ -113,6 +118,12 @@ export default {
     }
   },
   methods: {
+    filterHandler(value, row, column) {
+      // const property = column['property'];
+      // console.log(value, row, column);
+      
+      return row.is_master === 1
+    },
     async fetchData(wordListName) {
       // const {uid} = this.$auth.user;
       const res = await this.$axios({
@@ -167,11 +178,11 @@ export default {
       })
       if (res.status === 200) {
         this.$notify({
-          title: 'Deleted',
+          title: 'Deleted'
         })
         this.allData.some((item, index, arr) => {
           if (item.id === row.id) {
-            arr.splice(index, 1);
+            arr.splice(index, 1)
             return true
           }
         })
