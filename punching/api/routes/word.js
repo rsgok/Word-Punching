@@ -2,14 +2,15 @@ const express = require('express')
 const router = express.Router();
 
 const query = require('../../utils/query')
+const punchCalendar = require("../util/calendar")
 
 
 router.post('/punch', async function (req, res) {
     const { word } = req.body;
     const { uid } = req.user;
-    
+
     // query whether exist
-    let sql = `SELECT * FROM word WHERE text=?`;
+    let sql = `SELECT id FROM word WHERE text=?`;
     const ifExistQuery = await query(sql, [word]);
     const ifExist = ifExistQuery.length === 0 ? false : true;
 
@@ -25,18 +26,13 @@ router.post('/punch', async function (req, res) {
     sql = `INSERT INTO memory 
     (uid, wordid, lastmem_time) VALUES (?,?,now()) \
     on duplicate key update times=times+1`;
-    const insertMemoryQuery = await query(sql, [uid, wordid]);
+    await query(sql, [uid, wordid]);
 
-    // TODO 连续打卡的逻辑, 考虑使用日历的形式
-    // update user info
-    sql = `UPDATE user \
-    SET punching_days=punching_days+1, continous_punching_days=continous_punching_days+1 \
-    WHERE uid=?`;
-    const updateUserInfo = await query(sql, [uid]);
+    // calendar relevant
+    await punchCalendar(uid, word, 'punch')
 
     // get detail info
-    // TODO 返回数据精确化, 比如password不应该返回
-    sql = `SELECT * FROM memory \
+    sql = `SELECT word.id, word.text FROM memory \
     JOIN user ON memory.uid=user.uid \
     JOIN word ON memory.wordid=word.id \
     WHERE wordid = ?`
@@ -49,27 +45,33 @@ router.post('/punch', async function (req, res) {
     });
 })
 
-// router.post('/delete', async function(req, res){
-//     
-//     const { word } = req.body;
-// })
-
-router.post('/master', async function(req, res){
-    const { word } = req.body;
+router.post('/delete', async function (req, res) {
+    const { wordid } = req.body;
     const { uid } = req.user;
-    sql = `INSERT INTO memory 
-    (uid, wordid, times, is_master, lastmem_time) VALUES (?,?,?,?,now()) \
-    on duplicate key update is_master=1`;
-    const masterRes = await query(sql, [uid,word.id,1,1]);
+    const sql = `DELETE FROM memory WHERE uid=? and wordid=?`
+    await query(sql, [uid, wordid])
     res.status(200).json({
         msg: "success"
     });
 })
-router.post('/unmaster', async function(req, res){  
-    const { word } = req.body;
+
+router.post('/master', async function (req, res) {
+    const { wordid, text } = req.body;
     const { uid } = req.user;
-    sql = `UPDATE memory SET is_master=0 WHERE uid=? and wordid=?`;
-    const unmasterRes = await query(sql, [uid,word.id]);
+    const sql = `INSERT INTO memory 
+    (uid, wordid, is_master, lastmem_time) VALUES (?,?,?,now()) \
+    on duplicate key update is_master=1`;
+    await query(sql, [uid, wordid, 1]);
+    await punchCalendar(uid, text, 'master')
+    res.status(200).json({
+        msg: "success"
+    });
+})
+router.post('/unmaster', async function (req, res) {
+    const { wordid } = req.body;
+    const { uid } = req.user;
+    const sql = `UPDATE memory SET is_master=0 WHERE uid=? and wordid=?`;
+    await query(sql, [uid, wordid]);
     res.status(200).json({
         msg: "success"
     });

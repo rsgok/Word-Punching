@@ -20,3 +20,4 @@ bin-release/
 .vscode
 .DS_Store
 .nuxt
+__pycache__

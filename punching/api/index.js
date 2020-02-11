@@ -5,6 +5,7 @@ const expressJWT = require("express-jwt");
 const wordRouter = require('./routes/word');
 const wordlistRouter = require('./routes/wordlist');
 const authRouter = require('./routes/auth');
+const statisticsRouter = require('./routes/statistics')
 
 const myconfig = require("./config");
 
@@ -31,6 +32,7 @@ app.use((req, res, next) => {
 app.use("/word", wordRouter);
 app.use("/wordlist", wordlistRouter);
 app.use("/auth", authRouter);
+app.use("/statistics", statisticsRouter);
 
 module.exports = {
     path: '/api',
