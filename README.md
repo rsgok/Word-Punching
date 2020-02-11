@@ -1,2 +1,15 @@
 # Word-Punching
-背TOEFL打卡用
+背单词打卡用
+
+
+
+### usage
+
+```bash
+# 在punching子目录下
+docker build -t wordpunching:(version) .
+docker run -dt -p 6001:3000 --name="wordpunching" wordpunching:(version)
+# 查看container日志
+docker logs --since 30m CONTAINER_ID
+```
+

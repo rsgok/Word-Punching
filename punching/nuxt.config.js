@@ -59,7 +59,7 @@ module.exports = {
    */
   build: {
     // transpile: [/^element-ui/],
-    analyze: true,
+    // analyze: true,
     maxChunkSize: 300000,
     babel: {
       // presets: [["es2015", { "modules": false }]],
