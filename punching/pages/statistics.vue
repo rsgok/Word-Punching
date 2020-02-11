@@ -13,13 +13,9 @@
         <el-tabs tab-position="left" class="tabs">
           <el-tab-pane label="Calendar">
             <div class="calendarDiv">
-              <client-only>
-                <el-calendar>
-                  <template v-slot:dateCell="{date, data}">
-                    <div>{{ computeDay(data.day) }} {{ computePunch(data.day) ? '✔' : ''}}</div>
-                  </template>
-                </el-calendar>
-              </client-only>
+              <calendarHeatmap 
+               :values="computeHeatMap()" 
+               :end-date="nowDate" />
             </div>
           </el-tab-pane>
           <el-tab-pane label="Timeline" :lazy="true">
@@ -59,8 +55,16 @@
 <script>
 import { isSameDay, isAfter, formatDistance } from 'date-fns'
 export default {
-  created() {
-    this.fetchData()
+  async asyncData({$axios}) {
+    const res = await $axios({
+        url: '/api/statistics',
+        method: 'post',
+        data: {}
+      })
+      return {
+        userInfo: res.data.userInfo,
+        calendarInfo: res.data.calendarInfo
+      }
   },
 
   data() {
@@ -71,25 +75,15 @@ export default {
     }
   },
   methods: {
-    // isMobile() {
-    //   if (
-    //     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    //       navigator.userAgent
-    //     )
-    //   ) {
-    //     return true
-    //   } else {
-    //     return false
-    //   }
-    // },
-    async fetchData() {
-      const res = await this.$axios({
-        url: '/api/statistics',
-        method: 'post',
-        data: {}
-      })
-      this.userInfo = res.data.userInfo
-      this.calendarInfo = res.data.calendarInfo
+    computeHeatMap() {
+      let res = []
+      this.calendarInfo.forEach(item => {
+        res.push({
+          date: new Date(item.rtime),
+          count: item.times
+        })
+      });
+      return res;
     },
     computeSplit(str) {
       return str.split(',')
