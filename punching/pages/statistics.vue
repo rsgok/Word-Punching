@@ -9,36 +9,39 @@
         <el-tabs tab-position="left" class="tabs">
           <el-tab-pane label="Calendar">
             <div class="calendarDiv">
+              <client-only>
               <el-calendar v-model="nowDate">
-                <template
-                  slot="dateCell"
-                  slot-scope="{date, data}">
-                  <p :class="data.isSelected ? 'is-selected' : ''">
-                    {{ data.day.split('-').slice(1).join('-') }} {{ data.isSelected ? '✔️' : ''}}
-                  </p>
+                <template slot="dateCell" slot-scope="{date, data}">
+                  <p>{{ computeDay(data.day) }} {{ computePunch(data.day) ? '✔️' : ''}}</p>
                 </template>
               </el-calendar>
+              </client-only>
             </div>
           </el-tab-pane>
           <el-tab-pane label="Timeline" :lazy="true">
             <div>
               <el-timeline>
-                <el-timeline-item timestamp="2018/4/12" placement="top">
+                <el-timeline-item
+                  v-for="item in calendarInfo"
+                  :key="item.id"
+                  :timestamp="computeDistance(item.rtime)"
+                  placement="top"
+                >
                   <el-card>
-                    <h4>更新 Github 模板</h4>
-                    <p>王小虎 提交于 2018/4/12 20:46</p>
-                  </el-card>
-                </el-timeline-item>
-                <el-timeline-item timestamp="2018/4/3" placement="top">
-                  <el-card>
-                    <h4>更新 Github 模板</h4>
-                    <p>王小虎 提交于 2018/4/3 20:46</p>
-                  </el-card>
-                </el-timeline-item>
-                <el-timeline-item timestamp="2018/4/2" placement="top">
-                  <el-card>
-                    <h4>更新 Github 模板</h4>
-                    <p>王小虎 提交于 2018/4/2 20:46</p>
+                    <h4>Mastered Words</h4>
+                    <div>
+                      <el-tag
+                        v-for="(item, index) in computeSplit(item.master_words)"
+                        :key="index"
+                      >{{item}}</el-tag>
+                    </div>
+                    <h4>Punched Words</h4>
+                    <div>
+                      <el-tag
+                        v-for="(item, index) in computeSplit(item.punch_words)"
+                        :key="index"
+                      >{{item}}</el-tag>
+                    </div>
                   </el-card>
                 </el-timeline-item>
               </el-timeline>
@@ -50,9 +53,10 @@
   </div>
 </template>
 <script>
+import { isSameDay, isAfter, formatDistance } from 'date-fns'
 export default {
   created() {
-    this.fetchData();
+    this.fetchData()
   },
 
   data() {
@@ -71,6 +75,27 @@ export default {
       })
       this.userInfo = res.data.userInfo
       this.calendarInfo = res.data.calendarInfo
+    },
+    computeSplit(str) {
+      return str.split(',')
+    },
+    computeDistance(v) {
+      return formatDistance(new Date(v), this.nowDate)
+    },
+    computeDay(day) {
+      return new Date(day).getDate()
+    },
+    computePunch(day) {
+      if (this.calendarInfo === null) return false
+      const curDate = new Date(day)
+      if (isAfter(curDate, this.nowDate)) return false
+
+      for (const item of this.calendarInfo) {
+        const d = new Date(item.rtime)
+        if (isSameDay(curDate, d)) return true
+        if (isAfter(d, curDate)) return false
+      }
+      return false
     }
   }
 }
@@ -85,5 +110,9 @@ export default {
 }
 .calendarDiv {
   margin-left: 30px;
+}
+.el-tag {
+  margin-right: 10px !important;
+  margin-top: 5px !important;
 }
 </style>

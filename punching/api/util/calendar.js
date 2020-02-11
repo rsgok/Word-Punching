@@ -37,7 +37,7 @@ const punchCalendar = async (uid, text, type = 'punch') => {
             } else {
                 master_words = master_words + `,${text}`
             }
-            sql = `UPDATE calendar SET master_words='${master_words}', times=times+1 \
+            sql = `UPDATE calendar SET master_words='${master_words}', times=times+1, rtime=now() \
             WHERE uid=${uid} AND to_days(rtime) = to_days(now())`
         } else if (type === 'punch') {
             let punch_words = existRes[0].punch_words;
@@ -46,7 +46,7 @@ const punchCalendar = async (uid, text, type = 'punch') => {
             } else {
                 punch_words = punch_words + `,${text}`
             }
-            sql = `UPDATE calendar SET punch_words='${punch_words}', times=times+1 \
+            sql = `UPDATE calendar SET punch_words='${punch_words}', times=times+1, rtime=now() \
             WHERE uid=${uid} AND to_days(rtime) = to_days(now())`
         }
         await query(sql, []);
