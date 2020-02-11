@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { Row, Col, Input, Pagination, Button, Calendar, Timeline, TimelineItem, Tabs, TabPane, Table, TableColumn, Dropdown, DropdownMenu, DropdownItem, Tag, Progress, Card, Link, Notification, Breadcrumb, BreadcrumbItem, Message } from 'element-ui'
+import { Row, Col, Input, Pagination, Button, Timeline, TimelineItem, Tabs, TabPane, Table, TableColumn, Dropdown, DropdownMenu, DropdownItem, Tag, Progress, Card, Link, Notification, Breadcrumb, BreadcrumbItem, Message } from 'element-ui'
 // import locale from 'element-ui/lib/locale/lang/en'
 
 Vue.use(Row);
@@ -20,7 +20,6 @@ Vue.use(DropdownMenu);
 Vue.use(DropdownItem);
 Vue.use(Tabs);
 Vue.use(TabPane);
-Vue.use(Calendar);
 Vue.use(Timeline);
 Vue.use(TimelineItem);
 
