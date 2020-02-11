@@ -1,7 +1,11 @@
 <template>
   <div class="container">
     <el-row>
-      <el-col :md="{ span: 16, offset: 4 }" :sm="{ span: 20, offset: 2 }">
+      <el-col
+        :md="{ span: 16, offset: 4 }"
+        :sm="{ span: 20, offset: 2 }"
+        :xs="{ span: 20, offset: 2 }"
+      >
         <el-breadcrumb separator="/">
           <el-breadcrumb-item :to="{ path: '/' }">Index</el-breadcrumb-item>
           <el-breadcrumb-item>Statistics</el-breadcrumb-item>
@@ -10,11 +14,11 @@
           <el-tab-pane label="Calendar">
             <div class="calendarDiv">
               <client-only>
-              <el-calendar v-model="nowDate">
-                <template slot="dateCell" slot-scope="{date, data}">
-                  <p>{{ computeDay(data.day) }} {{ computePunch(data.day) ? '✔️' : ''}}</p>
-                </template>
-              </el-calendar>
+                <el-calendar>
+                  <template v-slot:dateCell="{date, data}">
+                    <div>{{ computeDay(data.day) }} {{ computePunch(data.day) ? '✔' : ''}}</div>
+                  </template>
+                </el-calendar>
               </client-only>
             </div>
           </el-tab-pane>
@@ -67,6 +71,17 @@ export default {
     }
   },
   methods: {
+    // isMobile() {
+    //   if (
+    //     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    //       navigator.userAgent
+    //     )
+    //   ) {
+    //     return true
+    //   } else {
+    //     return false
+    //   }
+    // },
     async fetchData() {
       const res = await this.$axios({
         url: '/api/statistics',
