@@ -235,7 +235,8 @@ export default {
         url: '/api/word/master',
         method: 'post',
         data: {
-          wordid: row.id
+          wordid: row.id,
+          text: row.text
         }
       })
       if (res.status === 200) {

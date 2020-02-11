@@ -20,8 +20,8 @@ router.post('/login', async function (req, res) {
             },
             myconfig.jwtSecret,
             {
-                // 授权时效1day
-                expiresIn: 60 * 60 * 24
+                // 授权时效3day
+                expiresIn: 60 * 60 * 24 * 3
             }
         );
         res.status(200).json({
