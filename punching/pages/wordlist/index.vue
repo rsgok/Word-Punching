@@ -27,6 +27,7 @@
               <el-progress :percentage="item.percentage" v-if="item.isBegin"></el-progress>
             </div>
             <el-button
+              class="hidden-md-and-down"
               style="float: right; padding: 3px 0"
               type="text"
               @click="linkToDetail(item.name)"

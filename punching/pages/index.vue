@@ -3,26 +3,41 @@
     <div class="mainbox">
       <!-- TODO 动态适应样式-->
       <el-row>
-        <div class="title">Words Punching</div>
+        <el-col
+          :md="{ span: 8, offset: 10 }"
+          :sm="{ span: 8, offset: 15 }"
+          :xs="{ span: 8, offset: 15 }"
+        >
+          <div class="header">
+            <el-dropdown @command="handleDropdownCommand"
+            size="medium" split-button>
+              {{$auth.user.uname}}
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="gotoStatistics">Statistics</el-dropdown-item>
+                <el-dropdown-item command="gotoWordList">WordList</el-dropdown-item>
+                <el-dropdown-item divided command="handleUnlogin">Logout</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </div>
+        </el-col>
       </el-row>
       <el-row>
-        <el-col :span="10" :offset="6">
+        <div class="title">Word Punching</div>
+      </el-row>
+      <el-row>
+        <el-col
+          :md="{ span: 10, offset: 6 }"
+          :sm="{ span: 16, offset: 1 }"
+          :xs="{ span: 16, offset: 1 }"
+        >
           <el-input v-model="input" placeholder="Input Word To Punch"></el-input>
         </el-col>
-        <el-col :span="2">
+        <el-col
+          :md="{ span: 2, offset: 0 }"
+          :sm="{ span: 2, offset: 1 }"
+          :xs="{ span: 2, offset: 1 }"
+        >
           <el-button type="primary" @click="handlePunch">Punch</el-button>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="4" :offset="10">
-          <div class="btn-links">
-            <nuxt-link to="/statistics">
-              <el-button type="text">Statistics</el-button>
-            </nuxt-link>
-            <nuxt-link to="/wordlist">
-              <el-button type="text">WordList</el-button>
-            </nuxt-link>
-          </div>
         </el-col>
       </el-row>
     </div>
@@ -38,9 +53,29 @@ export default {
     }
   },
   methods: {
+    handleDropdownCommand(command) {
+      if(command === "gotoStatistics") this.gotoStatistics();
+      else if(command === "gotoWordList") this.gotoWordList();
+      else if(command === "handleUnlogin") this.handleUnlogin();
+    },
+    gotoStatistics() {
+      this.$router.push({
+        path: '/statistics'
+      })
+    },
+    gotoWordList() {
+      this.$router.push({
+        path: '/wordlist'
+      })
+    },
+    async handleUnlogin() {
+      await this.$auth.logout()
+      this.$router.push({
+        path: '/login'
+      })
+    },
     async handleMark(val) {
-      await console.log("handle mark");
-      
+      await console.log('handle mark')
     },
     async handlePunch() {
       const word = this.input
@@ -70,7 +105,7 @@ export default {
           'Punch the word ',
           h('el-tag', null, detail.text),
           ' successfully!'
-        ]),
+        ])
         // TODO 主页快速master单词
         // onClose: () => {
         //   // if times>=5
@@ -116,7 +151,7 @@ export default {
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   text-align: center;
 }
 .mainbox {
@@ -124,7 +159,8 @@ export default {
 }
 .title {
   font-size: 60px;
-  margin-bottom: 80px;
+  margin-bottom: 60px;
+  word-wrap: break-word;
 }
 .input-item {
   display: flex;
@@ -138,5 +174,13 @@ export default {
   justify-content: space-around;
   align-items: center;
   margin-top: 30px;
+}
+.header {
+  margin-top: 50px;
+  margin-bottom: 100px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
 }
 </style>
