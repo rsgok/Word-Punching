@@ -1,7 +1,11 @@
 <template>
   <div class="container">
     <el-row>
-      <el-col :md="{ span: 16, offset: 4 }" :sm="{ span: 20, offset: 2 }">
+      <el-col
+        :md="{ span: 16, offset: 4 }"
+        :sm="{ span: 20, offset: 2 }"
+        :xs="{ span: 20, offset: 2 }"
+      >
         <el-breadcrumb separator="/">
           <el-breadcrumb-item :to="{ path: '/' }">Index</el-breadcrumb-item>
           <el-breadcrumb-item>Statistics</el-breadcrumb-item>
