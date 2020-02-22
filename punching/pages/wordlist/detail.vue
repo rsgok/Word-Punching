@@ -22,10 +22,28 @@
           ></el-pagination>
         </div>
         <el-card class="box-card" v-if="wordListName!=='mywords'">
-          <el-input v-model="searchtext" placeholder="search word" @input="handleSearch" clearable/>
+          <div class="rowplay">
+            <el-input
+              v-model="searchtext"
+              placeholder="search word"
+              @input="handleSearch"
+              clearable
+            />
+            <el-switch
+              class="marginleft50 switchbox"
+              v-model="hideMaster"
+              active-text="Hide Master"
+              inactive-text="Show All"
+            ></el-switch>
+          </div>
         </el-card>
         <el-card class="box-card">
-          <el-table :data="tableData" style="width: 100%" size="medium" :stripe="true">
+          <el-table
+            :data="!hideMaster || searchtext!=='' ? tableData:filterMasterWords"
+            style="width: 100%"
+            size="medium"
+            :stripe="true"
+          >
             <el-table-column label="Times" width="80px">
               <template slot-scope="scope">
                 <el-tag
@@ -34,7 +52,12 @@
                   :type="scope.row.is_master===1 ? 'success' : 'danger'"
                   class="tag"
                 >{{scope.row.times}}</el-tag>
-                <el-tag size="mini" v-else type="info" class="tag">0</el-tag>
+                <el-tag
+                  size="mini"
+                  v-else
+                  :type="scope.row.is_master===1 ? 'success' : 'info'"
+                  class="tag"
+                >0</el-tag>
               </template>
             </el-table-column>
             <el-table-column label="Word" prop="text" width="150px">
@@ -123,18 +146,24 @@ export default {
       limit: 50,
       paginationDisabled: false,
       tableData: [],
-      searchtext: ''
+      searchtext: '',
+      hideMaster: false
     }
+  },
+  computed: {
+    filterMasterWords() {
+      return this.tableData.filter((item) => item.is_master === 0)
+    },
   },
   methods: {
     async handleSearch(value) {
-      if(value === "") {
-        this.paginationDisabled = false;
-        this.handlePage(this.page);
-        return;
+      if (value === '') {
+        this.paginationDisabled = false
+        this.handlePage(this.page)
+        return
       }
-      const wordListName = this.wordListName;
-      this.paginationDisabled = true;
+      const wordListName = this.wordListName
+      this.paginationDisabled = true
       const res = await this.$axios({
         url: '/api/wordlist/search',
         method: 'post',
@@ -294,5 +323,17 @@ export default {
 }
 .tag {
   margin-left: 5px;
+}
+.rowplay {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.marginleft50 {
+  margin-left: 50px;
+}
+.switchbox {
+  width: 300px;
 }
 </style>

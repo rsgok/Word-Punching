@@ -9,9 +9,9 @@
           <el-card shadow="never">
             <div class="loginbox">
               <div class="loginText">Word Punching</div>
-              <el-input v-model="uname" placeholder="user name"></el-input>
-              <el-input v-model="upassword" placeholder="user password"></el-input>
-              <el-button type="primary" @click="handleLogin">Login</el-button>
+              <el-input v-model="uname" placeholder="user name" class="inputbox"></el-input>
+              <el-input v-model="upassword" placeholder="user password" class="inputbox"></el-input>
+              <el-button type="primary" @click="handleLogin" class="btnbox">Login</el-button>
             </div>
           </el-card>
         </el-col>
@@ -50,8 +50,8 @@ export default {
 .container {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
+  align-items: center;
+  justify-content: flex-start;
   background: url('http://q4pjcl3ln.bkt.clouddn.com/RavenWolf.jpg') center
     center no-repeat;
   width: 100vw;
@@ -59,14 +59,13 @@ export default {
 }
 .mainbox {
   width: 100vw;
-  margin-bottom: 30vh;
+  margin-top: 100px;
 }
 .loginbox {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
-  height: 45vh;
 }
 .loginText {
   font-size: 50px;
@@ -75,5 +74,8 @@ export default {
 }
 .el-button {
   width: 100%;
+}
+.inputbox {
+  margin-bottom: 10px;
 }
 </style>
