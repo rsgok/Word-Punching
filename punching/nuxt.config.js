@@ -29,7 +29,7 @@ module.exports = {
    */
   plugins: [
     { src: '@/plugins/element-ui', ssr: true }, 
-    { src: '@/plugins/heatmap', ssr: false },
+    { src: '@/plugins/heatmap', ssr: true },
     '@/plugins/axios'
   ],
   /*
