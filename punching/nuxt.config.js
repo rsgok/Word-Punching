@@ -28,8 +28,8 @@ module.exports = {
    ** Plugins to load before mounting the App
    */
   plugins: [
-    { src: '@/plugins/element-ui', ssr: true }, 
-    { src: '@/plugins/heatmap', ssr: true },
+    '@/plugins/element-ui', 
+    { src: '@/plugins/heatmap', ssr: false },
     '@/plugins/axios'
   ],
   /*
