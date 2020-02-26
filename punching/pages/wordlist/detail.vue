@@ -152,8 +152,10 @@ export default {
   },
   computed: {
     filterMasterWords() {
-      return this.tableData.filter((item) => item.is_master === 0)
-    },
+      return this.tableData.filter(
+        (item) => item.is_master === 0 || item.times === 0
+      )
+    }
   },
   methods: {
     async handleSearch(value) {
