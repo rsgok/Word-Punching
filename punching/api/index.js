@@ -16,6 +16,7 @@ app.use(
     }).unless({
         path: [
             "/api/auth/login",
+            "/api/auth/register",
         ] //除了这些地址，其他的URL都需要验证
     })
 );

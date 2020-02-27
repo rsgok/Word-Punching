@@ -34,6 +34,45 @@ router.post('/login', async function (req, res) {
     });
 })
 
+router.post('/register', async function (req, res) {
+    console.log("register user");
+    const {username, password, inviteCode} = req.body;
+    if(inviteCode !== myconfig.inviteCode) {
+        res.status(200).json({
+            code: 401,
+            msg: "Invite Code Wrong"
+        })
+    }
+    else if(username.length<6) {
+        res.status(200).json({
+            code: 403,
+            msg: "Username Length Should >6"
+        })
+    }
+    else if(password.length<6) {
+        res.status(200).json({
+            code: 403,
+            msg: "Password Length Should >6"
+        })
+    } else {
+        let sql = `SELECT uname FROM user WHERE uname=?`;
+        const queryUser = await query(sql, [username]);
+        if(queryUser.length !== 0) {
+            res.status(200).json({
+                code: 402,
+                msg: "Duplicate User"
+            })
+        } else {
+            sql = `INSERT INTO user (uname, password) VALUES (?,?)`;
+            await query(sql, [username, password]);
+            res.status(200).json({
+                code: 200,
+                msg: "Register Successfully"
+            })
+        }
+    }
+})
+
 router.post('/logout', async function (req, res) {
     console.log("user logged out");
     res.json({ status: 'OK' })
